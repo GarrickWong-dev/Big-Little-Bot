@@ -1,6 +1,7 @@
 #The Model
 import sqlite3
 
+
 dbPath = "backend/big_little.db"
 
 def init_db():
@@ -11,7 +12,6 @@ def init_db():
                 name TEXT,
                 challenge TEXT,
                 points INT,
-                photoPath TEXT,
                 picturePath TEXT
             );
         ''')
@@ -28,10 +28,24 @@ def addSub(sub):
     with sqlite3.connect(dbPath) as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "INSERT INTO submissions VALUES (?,?,?,?,?)",
-            (sub.name, sub.challenge, sub.points, sub.photoPath, sub.picturePath)
+            "INSERT INTO submissions VALUES (?,?,?,?)",
+            (sub.teamName, sub.challenge, sub.points, sub.picturePath)
         )
         conn.commit()
+
+def getTeams(): #for submit page
+    with sqlite3.connect(dbPath) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT username FROM login"
+        )
+        results = cursor.fetchall()
+        teamNames = []
+
+        for row in results:
+            teamNames.append(row[0])
+        return teamNames
+        
 
 def addUser(username, password):
     with sqlite3.connect(dbPath) as conn:
@@ -60,6 +74,7 @@ def checkLogIn(userName, passWord):
         if result is None:
             return False
         return result[0] == passWord
+    
 
 #For Discord!
 

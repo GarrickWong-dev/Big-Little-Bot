@@ -11,18 +11,19 @@ class Submission:
         self.challenge = challenge
         self.points = points
 
-        ogFolderPath = os.path.join("pics",teamName)
+        baseDir = os.path.dirname(os.path.abspath(__file__))
+        picsPath = os.path.join(baseDir, "pics", teamName)
+        self.picturePath = self.rename(picsPath,photoName) 
 
-        self.picturePath = self.rename(ogFolderPath,photoName) 
         if ("heic" in self.picturePath.lower()):
             self.picturePath = self.heicConvert(self.picturePath)
 
-    def rename(self, ogPath, photoName):
-        oldPath = os.path.join(ogPath, photoName)
+    def rename(self, picsPath, photoName):
+        oldPath = os.path.join(picsPath, photoName)
         suffix = os.path.splitext(photoName)[1] #jpg, png, heic etcc
-        newName = f"{self.challenge}, {self.points} Points! {self.date}{suffix}"
+        newName = f"{self.challenge}, {str(self.points)} Points! {self.date}{suffix}"
 
-        newPath = os.path.join(ogPath, newName)
+        newPath = os.path.join(picsPath, newName)
         os.rename(oldPath,newPath)
         return newPath
     

@@ -3,9 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSA BIG LITTLE!!!</title>
+    <title>SUBMIT</title>
 </head>
 <body>
-    <h1>SUBMIT</h1>
+    <h1>NEW SUBMITION</h1>
+    <form method = "POST" enctype="multipart/form-data">
+        <label for="team">Choose Your Team:</label>
+        <select id = "team" name = "team" required>
+            <option value="">--Select a Team--</option>
+            {% for name in teams%}
+                <option value = "{{ name }}">{{ name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <br>
+        <label for="challenge">Challenge:</label>
+        <input type ="text" id = "challenge" name = "challenge" required>
+        <br>
+        <br>
+        <label for="points">Points:</label>
+        <input type ="number" id = "points" name = "points" required>
+        <br>
+        <br>
+        <label for="date">Date:</label>
+        <input type ="text" id = "date" name = "date" required>
+        <br>
+        <br>
+        <label for="pic">Upload a Photo:</label>
+        <input type = "file" id="pic" name = "pic" accept=".png, .jpg, .jpeg, .heic" required>
+        <br>
+        <br>
+        <button type="submit">Submit</button>
+
+
+    </form>
 </body>
 </html>

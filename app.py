@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 from backend import webController
+import os
 
-
+webController.createTables()
 app = Flask(__name__)
 
 @app.route("/")
@@ -46,9 +47,23 @@ def login():
             error="Invalid username or password")
     return render_template("login.html")
 
-@app.route("/submit")
+@app.route("/submit", methods=["GET", "POST"])
 def submit():
-    return render_template("submit.html")
+    teams = webController.listOfTeams()
+    if request.method == "POST":
+        team = request.form.get("team")
+        challenge = request.form.get("challenge")
+        points = int(request.form.get("points"))
+        date = request.form.get("date")
+        pic = request.files.get("pic")
+        
+        baseDir = os.path.dirname(os.path.abspath(__file__))
+        file = os.path.join(baseDir, "backend/pics", team, pic.filename)
+        pic.save(file)
+
+        webController.newSubmit(team, challenge, points, date, pic.filename)
+        return redirect(url_for("submit"))
+    return render_template("submit.html", teams = teams)
 
 if __name__ == "__main__":
     app.run(debug=True)
