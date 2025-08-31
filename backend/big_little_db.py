@@ -7,7 +7,7 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis
 
 googleCredsJson = os.getenv("GOOGLE_CREDS_JSON")
 credsDict = json.loads(googleCredsJson)
-creds = Credentials.from_service_account_file(credsDict, scopes=SCOPES)
+creds = Credentials.from_service_account_info(credsDict, scopes=SCOPES)
 client = gspread.authorize(creds)
 
 sheetName = "BigLittleDB"
