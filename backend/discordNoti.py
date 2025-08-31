@@ -1,10 +1,16 @@
 import requests
 from . import apiKeys
+import io
 from . import sub
-import os
 
 def noti(sub):
-    fileName = os.path.basename(sub.picturePath)
+    fileName = "submission.jpg"
+
+    imageBuffer = io.BytesIO()
+    rgbImage = sub.pic.convert("RGB")
+    rgbImage.save(imageBuffer, format="JPEG")
+    imageBuffer.seek(0)
+    imageBuffer.seek(0)
 
     message = (
         f"📸 **New Submission**\n"
@@ -14,7 +20,7 @@ def noti(sub):
         f"Date: **{sub.date}**"
     )
 
-    with open(sub.picturePath, "rb") as f:
-        files = {"file": (fileName, f)}
-        data = {"content":message}
-        requests.post(apiKeys.discord, data=data, files=files)
+    files = {"file": (fileName, imageBuffer, "image/jpeg")}
+    data = {"content":message}
+
+    requests.post(apiKeys.discord, data=data, files=files)
