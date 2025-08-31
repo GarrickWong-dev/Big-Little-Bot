@@ -1,5 +1,6 @@
 import requests
 from . import apiKeys
+import os
 import io
 from . import sub
 
@@ -23,4 +24,5 @@ def noti(sub):
     files = {"file": (fileName, imageBuffer, "image/jpeg")}
     data = {"content":message}
 
-    requests.post(apiKeys.discord, data=data, files=files)
+    discordWebhookUrl = os.getenv("DISCORD_WEBHOOK_URL")
+    requests.post(discordWebhookUrl, data=data, files=files)
