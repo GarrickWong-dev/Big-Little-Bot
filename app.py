@@ -65,5 +65,11 @@ def submit():
         return redirect(url_for("submit"))
     return render_template("submit.html", teams = teams)
 
+@app.route("/leaderboard")
+def leaderboard():
+    scores = webController.getScoreBoard()
+    return render_template("leaderboard.html", leaderboard = scores)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

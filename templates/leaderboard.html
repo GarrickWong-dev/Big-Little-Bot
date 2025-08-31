@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSA BIG LITTLE!!!</title>
+</head>
+<body>
+    {% if success == "team_added" %}
+    <script>
+        alert("New team added!");
+    </script>
+    {% endif %}
+    <h1>CSA BIG LITTLE LEADER BOARD!</h1>
+    <br>
+    <br>
+    <table>
+        <tr>
+            <th>Team</th>
+            <th>Points</th>
+        </tr>
+        {% for team, points in leaderboard %}
+        <tr>
+            <td>{{ team }}</td>
+            <td>{{ points }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <br>
+    <a href="/">Home</a>
+</body>
+</html>
