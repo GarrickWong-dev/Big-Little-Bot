@@ -1,5 +1,4 @@
 import requests
-from . import apiKeys
 import os
 import io
 from . import sub
