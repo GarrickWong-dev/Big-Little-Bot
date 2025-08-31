@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSA BIG LITTLE!!!</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     {% if success == "team_added" %}
@@ -11,10 +12,16 @@
         alert("New team added!");
     </script>
     {% endif %}
-    <h1>CSA BIG LITTLE!</h1>
-    <ul>
-        <li><a href="/login">Log In</a></li>
-        <li><a href="/leaderboard">Leader Board</a></li>
-    </ul>
+
+    <div class="container">
+        <img src="../static/pics/CSALogo.png" alt="CSA Logo" id="logo">
+        <h1>CSA BIG LITTLE!</h1>
+        <ul>
+            <li><a href="/login">Log In</a></li>
+            <br>
+            <br>
+            <li><a href="/leaderboard">Leader Board</a></li>
+        </ul>
+    </div>
 </body>
 </html>
