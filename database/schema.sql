@@ -31,3 +31,13 @@ CREATE TABLE Submissions (
     FOREIGN KEY (contestID)
         REFERENCES Contests(contestID)
 );
+
+CREATE TABLE Users (
+    username TEXT PRIMARY KEY,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL CHECK(role IN ('admin', 'user')),
+    teamID INTEGER,
+
+    FOREIGN KEY (teamID)
+        REFERENCES Teams(teamID)
+);
