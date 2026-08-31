@@ -1,6 +1,6 @@
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const { newSubmission } = require('../repository/usersRepository');
+const userRepo = require('../repository/usersRepository');
 
 const dbPath = path.resolve(__dirname, '../../database/bigLittle.db');
 const db = new sqlite3.Database(dbPath);
@@ -35,7 +35,7 @@ async function createSubmission({ title, teamID, contestID, submissionDate, poin
   const maxSubs = contestRow.maxSubs;
 
   if (maxSubs === null) {
-    return newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
+    return userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
   }
 
   const countSubs = `
@@ -58,7 +58,7 @@ async function createSubmission({ title, teamID, contestID, submissionDate, poin
     throw new Error(`This team has reached the contest limit of ${maxSubs} submissions for today.`);
   }
 
-  return newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
+  return userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
 }
 
 module.exports = {
