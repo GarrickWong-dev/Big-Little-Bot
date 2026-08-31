@@ -26,6 +26,19 @@ async function createUser(req, res) {
   }
 }
 
+async function addToContest(req, res) {
+  try {
+    const result = await adminService.addToContest(req.body);
+    return res.status(200).json({ success: true, result });
+  } catch (error) {
+    const message = error.message || 'Something went wrong';
+    if (message.includes('contestID') || message.includes('teamID')) {
+      return res.status(400).json({ message });
+    }
+    return res.status(500).json({ message });
+  }
+}
+
 async function changeMaxSubs(req, res) {
   try {
     const contestID = req.params.contestID;
@@ -108,4 +121,5 @@ module.exports = {
   deleteSubmission,
   makeActive,
   makeInactive,
+  addToContest
 };

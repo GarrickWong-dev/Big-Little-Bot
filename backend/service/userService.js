@@ -1,64 +1,38 @@
-const path = require('path');
-const sqlite3 = require('sqlite3').verbose();
 const userRepo = require('../repository/userRepository');
-
-const dbPath = path.resolve(__dirname, '../../database/bigLittle.db');
-const db = new sqlite3.Database(dbPath);
+const contestRepo = require('../repository/ContestRepoHelper');
+const subsRepo = require('../repository/subsRepoHelper');
+const ctRepo = require('../repository/ctRepoHelper');
 
 async function createSubmission({ title, teamID, contestID, submissionDate, points, picturePath }) {
   if (!title || !teamID || !contestID || !submissionDate || points == null || !picturePath) {
     throw new Error('All fields are required');
   }
 
-  const contestSql = `
-    SELECT maxSubs, active
-    FROM Contests
-    WHERE contestID = ?
-  `;
-
-  const contestRow = await new Promise((resolve, reject) => {
-    db.get(contestSql, [contestID], (err, row) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(row);
-    });
-  });
-
-  const active = contestRow.active;
+  const active = await contestRepo.getStatus(contestID);
 
   if (!active) {
     throw new Error('This contest is not active.');
   }
 
-  const maxSubs = contestRow.maxSubs;
+  const maxSubs = await contestRepo.getMaxSubs(contestID);
 
   if (maxSubs === null) {
-    return userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
+    const submission = await userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
+    await ctRepo.addPoints(contestID, teamID, points);
+    return submission;
   }
 
-  const countSubs = `
-    SELECT COUNT(*) AS submissionCount
-    FROM Submissions
-    WHERE contestID = ? AND teamID = ? AND DATE(submissionDate) = DATE(?)
-  `;
+  const dailySubsCount = await subsRepo.countDailySubs(contestID, teamID, submissionDate);
 
-  const row = await new Promise((resolve, reject) => {
-    db.get(countSubs, [contestID, teamID, submissionDate], (err, result) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(result);
-    });
-  });
-
-  if (row.submissionCount >= maxSubs){
+  if (dailySubsCount >= maxSubs){
     throw new Error(`This team has reached the contest limit of ${maxSubs} submissions for today.`);
   }
 
-  return userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
+  const submission = await userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
+
+  await ctRepo.addPoints(contestID, teamID, points);
+
+  return submission;
 }
 
 module.exports = {

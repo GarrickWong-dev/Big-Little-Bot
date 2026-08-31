@@ -59,6 +59,29 @@ function createUser({username, password, role}){
     })
 }
 
+function addToContest(contestID, teamID){
+    return new Promise((resolve, reject) => {
+        if (!contestID || !teamID){
+            reject(new Error("contestID and teamID are required"));
+            return;
+        }
+        const insert = `
+        INSERT INTO ContestTeams (contestID, teamID)
+        VALUES (?, ?)
+        `;
+        db.run(insert, [contestID, teamID], function(err){
+            if (err){
+                reject(err);
+                return;
+            }
+            resolve({
+                contestID,
+                teamID
+            });
+        })
+    })
+}
+
 function changeMaxSubs(contestID, maxSubs){
     return new Promise((resolve, reject) => {
         if (!contestID){
@@ -177,5 +200,6 @@ module.exports = {
     createUser,
     deleteSubmission,
     makeActive,
-    makeInactive
+    makeInactive,
+    addToContest
 };

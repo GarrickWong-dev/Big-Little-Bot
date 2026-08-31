@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post('/contests', controller.createContest);
 router.post('/users', controller.createUser);
+router.post('/contests/addTeam', controller.addToContest);
 router.put('/contests/:contestID/maxsubs', controller.changeMaxSubs);
 router.delete('/submissions/:submissionID', controller.deleteSubmission);
 router.put('/contests/:contestID/activate', controller.makeActive);
