@@ -5,11 +5,22 @@ CREATE TABLE Contests (
     maxSubs INTEGER
 );
 
-CREATE TABLE Teams (
-    teamID INTEGER PRIMARY KEY AUTOINCREMENT,
-    teamName TEXT NOT NULL,
+CREATE TABLE Users (
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL CHECK(role IN ('admin', 'user', 'garrick')),
+    teamID INTEGER PRIMARY KEY AUTOINCREMENT
+);
+
+CREATE TABLE TeamContests (
+    teamID INTEGER NOT NULL,
     contestID INTEGER NOT NULL,
     pointsTotal INTEGER DEFAULT 0,
+
+    PRIMARY KEY (teamID, contestID),
+
+    FOREIGN KEY (teamID)
+        REFERENCES Users(teamID),
 
     FOREIGN KEY (contestID)
         REFERENCES Contests(contestID)
@@ -25,18 +36,9 @@ CREATE TABLE Submissions (
     picturePath TEXT NOT NULL,
 
     FOREIGN KEY (teamID)
-        REFERENCES Teams(teamID),
+        REFERENCES Users(teamID),
 
     FOREIGN KEY (contestID)
         REFERENCES Contests(contestID)
 );
 
-CREATE TABLE Users (
-    username TEXT PRIMARY KEY,
-    password TEXT NOT NULL,
-    role TEXT NOT NULL CHECK(role IN ('admin', 'user', 'garrick')),
-    teamID INTEGER,
-
-    FOREIGN KEY (teamID)
-        REFERENCES Teams(teamID)
-);

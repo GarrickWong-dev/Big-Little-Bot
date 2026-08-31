@@ -30,33 +30,7 @@ function createContest({contestName, maxSubs}){
     })
 }
 
-function createTeam({teamName, contestID}){
-    return new Promise((resolve, reject) => {
-        if (!teamName || !contestID){
-            reject(new Error("teamName and contestID are required"));
-            return;
-        }
-        const insert = `
-        INSERT INTO Teams (teamName, contestID) 
-        VALUES (?, ?)
-        `;
-
-        db.run(insert, [teamName, contestID], function (err){
-            if (err){
-                reject(err);
-                return;
-            }
-            const teamID = this.lastID;
-            resolve({
-                teamName,
-                contestID,
-                teamID
-            })
-        })
-    })
-}
-
-function createUser({username, password, role, teamID}){
+function createUser({username, password, role}){
     return new Promise((resolve, reject) => {
         if (!username || !password || !role){
             reject(new Error("All fields are required"));
@@ -67,17 +41,17 @@ function createUser({username, password, role, teamID}){
             return;
         }
         const insert = `
-        INSERT INTO Users (username, password, role, teamID)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO Users (username, password, role)
+        VALUES (?, ?, ?)
         `;
-        db.run(insert, [username, password, role, teamID], function(err){
+        db.run(insert, [username, password, role], function(err){
             if (err){
                 reject(err);
                 return;
             }
+            const teamID = this.lastID;
             resolve({
                 username,
-                password,
                 role,
                 teamID
             });
@@ -184,7 +158,6 @@ function makeInactive(contestID){
 module.exports = {
     createContest,
     changeMaxSubs,
-    createTeam,
     createUser,
     deleteSubmission,
     makeActive,
