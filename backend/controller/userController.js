@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const userService = require('../Service/usersService');
+const userService = require('../service/userService');
 
 const uploadDir = path.resolve(__dirname, '../../pics');
 

@@ -1,4 +1,4 @@
-const adminService = require('../Service/adminService');
+const adminService = require('../service/adminService');
 
 async function createContest(req, res) {
   try {

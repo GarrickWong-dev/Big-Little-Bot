@@ -1,6 +1,6 @@
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const userRepo = require('../repository/usersRepository');
+const userRepo = require('../repository/userRepository');
 
 const dbPath = path.resolve(__dirname, '../../database/bigLittle.db');
 const db = new sqlite3.Database(dbPath);

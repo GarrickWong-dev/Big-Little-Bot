@@ -1,0 +1,2 @@
+"Knows URL mappings"
+This folder contains programs responsible for defining API endpoints and connecting them to controller functions. Route modules determine which controller should handle a request based on the request's URL and HTTP method. Routes act as the bridge between incoming requests and the controller layer and should not contain business logic or database operations.
