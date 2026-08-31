@@ -1,6 +1,10 @@
+const fs = require('fs');
+const path = require('path');
 const adminRepo = require('../repository/adminRepository');
 const ctRepo = require('../repository/ctRepoHelper');
 const subsRepo = require('../repository/subsRepoHelper');
+
+const picsDir = path.resolve(__dirname, '../../pics');
 
 function createContest({ contestName, maxSubs }) {
     return adminRepo.createContest({ contestName, maxSubs });
@@ -26,6 +30,20 @@ async function deleteSubmission(submissionID) {
     }
 
     await ctRepo.removePoints(submissionID, submission.teamID, submission.contestID);
+
+    if (submission.picturePath) {
+        const relativePath = submission.picturePath.replace(/^\/pics\//, '');
+        const filePath = path.join(picsDir, relativePath);
+
+        try {
+            await fs.promises.unlink(filePath);
+        } catch (error) {
+            if (error.code !== 'ENOENT') {
+                throw error;
+            }
+        }
+    }
+
     return adminRepo.deleteSubmission(submissionID);
 }
 
