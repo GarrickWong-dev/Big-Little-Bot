@@ -11,7 +11,7 @@ async function createSubmission({ title, teamID, contestID, submissionDate, poin
   }
 
   const contestSql = `
-    SELECT maxSubs
+    SELECT maxSubs, active
     FROM Contests
     WHERE contestID = ?
   `;
@@ -25,6 +25,12 @@ async function createSubmission({ title, teamID, contestID, submissionDate, poin
       resolve(row);
     });
   });
+
+  const active = contestRow.active;
+
+  if (!active) {
+    throw new Error('This contest is not active.');
+  }
 
   const maxSubs = contestRow.maxSubs;
 
@@ -48,7 +54,7 @@ async function createSubmission({ title, teamID, contestID, submissionDate, poin
     });
   });
 
-  if (row && row.submissionCount >= maxSubs) {
+  if (row.submissionCount >= maxSubs){
     throw new Error(`This team has reached the contest limit of ${maxSubs} submissions for today.`);
   }
 
