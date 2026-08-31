@@ -1,0 +1,1 @@
+This folder contains programs responsible for the direct manipulation of the application's database. These modules handle database queries and updates, while business logic is handled by the service layer.

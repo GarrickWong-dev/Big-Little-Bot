@@ -1,9 +1,8 @@
 CREATE TABLE Contests (
     contestID INTEGER PRIMARY KEY AUTOINCREMENT,
     contestName TEXT NOT NULL,
-    startDate TEXT NOT NULL,
-    endDate TEXT NOT NULL,
-    active BOOLEAN DEFAULT TRUE
+    active BOOLEAN DEFAULT TRUE,
+    maxSubs INTEGER
 );
 
 CREATE TABLE Teams (
@@ -23,7 +22,7 @@ CREATE TABLE Submissions (
     contestID INTEGER NOT NULL,
     submissionDate TEXT NOT NULL,
     points INTEGER NOT NULL,
-    picture_path TEXT NOT NULL,
+    picturePath TEXT NOT NULL,
 
     FOREIGN KEY (teamID)
         REFERENCES Teams(teamID),
@@ -35,7 +34,7 @@ CREATE TABLE Submissions (
 CREATE TABLE Users (
     username TEXT PRIMARY KEY,
     password TEXT NOT NULL,
-    role TEXT NOT NULL CHECK(role IN ('admin', 'user')),
+    role TEXT NOT NULL CHECK(role IN ('admin', 'user', 'garrick')),
     teamID INTEGER,
 
     FOREIGN KEY (teamID)
