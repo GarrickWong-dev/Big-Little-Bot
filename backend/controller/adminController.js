@@ -28,10 +28,16 @@ async function createUser(req, res) {
 
 async function changeMaxSubs(req, res) {
   try {
-    const contestID = req.body.contestID;
+    const contestID = req.params.contestID;
     const maxSubs = req.body.maxSubs;
-    const result = await adminService.changeMaxSubs(contestID, maxSubs);
-    return res.status(200).json({ success: true, result });
+    const result = await adminService.changeMaxSubs(
+      contestID,
+      maxSubs
+    );
+    return res.status(200).json({
+      success: true,
+      result
+    });
   } catch (error) {
     const message = error.message || 'Something went wrong';
     if (message.includes('contestID')) {
@@ -47,7 +53,7 @@ async function changeMaxSubs(req, res) {
 async function deleteSubmission(req, res) {
   try {
     const submissionID = req.params.submissionID;
-    const result = await adminService.deleteSubmission(Number(submissionID));
+    const result = await adminService.deleteSubmission(submissionID);
     return res.status(200).json({ success: true, result });
   } catch (error) {
     const message = error.message || 'Something went wrong';
@@ -64,7 +70,7 @@ async function deleteSubmission(req, res) {
 async function makeActive(req, res) {
   try {
     const contestID = req.params.contestID;
-    const result = await adminService.makeActive(Number(contestID));
+    const result = await adminService.makeActive(contestID);
     return res.status(200).json({ success: true, result });
   } catch (error) {
     const message = error.message || 'Something went wrong';
@@ -81,7 +87,7 @@ async function makeActive(req, res) {
 async function makeInactive(req, res) {
   try {
     const contestID = req.params.contestID;
-    const result = await adminService.makeInactive(Number(contestID));
+    const result = await adminService.makeInactive(contestID);
     return res.status(200).json({ success: true, result });
   } catch (error) {
     const message = error.message || 'Something went wrong';
