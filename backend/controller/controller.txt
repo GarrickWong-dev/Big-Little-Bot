@@ -1,0 +1,10 @@
+"Knows requests and responses"
+This folder contains programs responsible for handling API requests and responses. Controller modules receive client data, invoke service functions, and return appropriate responses. Controllers act as a bridge between routes and the service layer and should not contain business logic or database queries.
+Like adaptor to the service layer
+
+REST and Request Data
+
+REST APIs typically use URL parameters to identify which resource is being accessed and the request body to provide data for the operation.
+A useful rule of thumb is:
+Parameters = Which thing?
+Body = What data?

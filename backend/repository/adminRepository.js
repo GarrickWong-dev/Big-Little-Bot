@@ -75,6 +75,10 @@ function changeMaxSubs(contestID, maxSubs){
                 reject(err);
                 return;
             }
+            if (this.changes === 0) {
+                reject(new Error("Contest not found"));
+                return;
+            }
             resolve({
                 contestID,
                 maxSubs
@@ -96,6 +100,10 @@ function deleteSubmission(submissionID){
         db.run(del, [submissionID], function(err){
             if (err){
                 reject(err);
+                return;
+            }
+            if (this.changes === 0) {
+                reject(new Error("Submission not found"));
                 return;
             }
             resolve({
@@ -121,6 +129,10 @@ function makeActive(contestID){
                 reject(err);
                 return;
             }
+            if (this.changes === 0) {
+                reject(new Error("Contest not found"));
+                return;
+            }
             resolve({
                 contestID,
                 active: true
@@ -144,6 +156,10 @@ function makeInactive(contestID){
         db.run(update, [contestID], function(err){
             if (err){
                 reject(err);
+                return;
+            }
+            if (this.changes === 0) {
+                reject(new Error("Contest not found"));
                 return;
             }
             resolve({
