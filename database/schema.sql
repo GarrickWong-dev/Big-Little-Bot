@@ -12,7 +12,7 @@ CREATE TABLE Users (
     teamID INTEGER PRIMARY KEY AUTOINCREMENT
 );
 
-CREATE TABLE TeamContests (
+CREATE TABLE ContestTeams (
     teamID INTEGER NOT NULL,
     contestID INTEGER NOT NULL,
     pointsTotal INTEGER DEFAULT 0,
