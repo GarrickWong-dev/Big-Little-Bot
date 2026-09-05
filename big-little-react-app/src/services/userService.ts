@@ -4,6 +4,7 @@ export interface CreateUserInput {
   username: string;
   password: string;
   role: UserRole;
+  adminID: number;
 }
 
 export interface User {

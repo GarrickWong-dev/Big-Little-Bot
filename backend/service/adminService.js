@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const adminRepo = require('../repository/adminRepository');
+const uataRepo = require('../repository/uataRepo');
 const ctRepo = require('../repository/ctRepo');
 const subsRepo = require('../repository/subsRepo');
 
@@ -12,8 +13,11 @@ async function createContest({ contestName, maxSubs, adminID }) {
     return response;
 }
 
-function createUser({ username, password, role }) {
-    return adminRepo.createUser({ username, password, role });
+async function createUser({ username, password, role, adminID }) {
+    const newUser = await adminRepo.createUser({ username, password, role });
+    const userID = newUser.userID;
+    await uataRepo.addUserAndAdmin(userID, adminID);
+    return newUser;
 }
 
 function addToContest({ contestID, userID }) {

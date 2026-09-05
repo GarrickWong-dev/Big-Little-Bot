@@ -14,9 +14,12 @@ function App() {
       <Route path="/" element={<MainPage />} />
       <Route path="/garrick" element={<GarrickPage />} />
       <Route path="/admin" element={<AdminPage />} />
-      <Route path="/contest/:contestID" element={<ContestPage />} />
       <Route
-        path="/contest/:contestID/submissions"
+        path="/contest/:contestID/admin/:adminID"
+        element={<ContestPage />}
+      />
+      <Route
+        path="/contest/:contestID/admin/:adminID/submissions"
         element={<SubmissionsPage />}
       />
       <Route path="/user" element={<UserPage />} />

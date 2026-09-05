@@ -11,6 +11,7 @@ export default defineConfig({
       "/contest": "http://localhost:3000",
       "/subs": "http://localhost:3000",
       "/user": "http://localhost:3000",
+      "/uata": "http://localhost:3000",
     },
   },
 })

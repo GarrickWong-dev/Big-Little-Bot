@@ -7,16 +7,25 @@ import {
   getContestName,
   updateContestMaxSubs,
 } from "../../services/contestService";
+import { getTeamName } from "../../services/userService";
+import { getUsersByAdmin } from "../../services/uataService";
+
+interface ContestUser {
+  userID: number;
+  teamName: string;
+}
 
 function ContestPage() {
   const navigate = useNavigate();
-  const { contestID } = useParams();
+  const { contestID, adminID } = useParams();
   const [contestName, setContestName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [userID, setUserID] = useState("");
   const [maxSubs, setMaxSubs] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contestUsers, setContestUsers] = useState<ContestUser[]>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
 
   useEffect(() => {
     if (!contestID) {
@@ -44,6 +53,45 @@ function ContestPage() {
     void loadContestName();
   }, [contestID]);
 
+  useEffect(() => {
+    if (!adminID) {
+      setErrorMessage("Admin ID is required.");
+      setIsLoadingUsers(false);
+      return;
+    }
+
+    const adminNumber = Number(adminID);
+
+    if (!Number.isInteger(adminNumber) || adminNumber < 1) {
+      setErrorMessage("Invalid admin ID.");
+      setIsLoadingUsers(false);
+      return;
+    }
+
+    async function loadContestUsers() {
+      try {
+        const userAssociations = await getUsersByAdmin(adminNumber);
+        const users = await Promise.all(
+          userAssociations.map(async ({ userID }) => ({
+            userID,
+            teamName: await getTeamName(userID),
+          })),
+        );
+        setContestUsers(users);
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Unable to load users for this admin.",
+        );
+      } finally {
+        setIsLoadingUsers(false);
+      }
+    }
+
+    void loadContestUsers();
+  }, [adminID]);
+
   const contestNumber = Number(contestID);
 
   function clearMessages() {
@@ -54,17 +102,19 @@ function ContestPage() {
   async function runContestAction(
     action: () => Promise<void>,
     successMessage: string,
-  ) {
+  ): Promise<boolean> {
     clearMessages();
     setIsSubmitting(true);
 
     try {
       await action();
       setStatusMessage(successMessage);
+      return true;
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to update contest.",
       );
+      return false;
     } finally {
       setIsSubmitting(false);
     }
@@ -76,11 +126,13 @@ function ContestPage() {
       return;
     }
 
-    await runContestAction(
+    const succeeded = await runContestAction(
       () => addUserToContest(contestNumber, Number(userID)),
       "User added to contest.",
     );
-    setUserID("");
+    if (succeeded) {
+      setUserID("");
+    }
   }
 
   async function handleMaxSubsUpdate() {
@@ -126,21 +178,30 @@ function ContestPage() {
         <h2>Submissions</h2>
         <button
           type="button"
-          onClick={() => navigate(`/contest/${contestID}/submissions`)}
+          onClick={() =>
+            navigate(`/contest/${contestID}/admin/${adminID}/submissions`)
+          }
         >
           View Submissions
         </button>
       </section>
       <section>
         <h2>Add User To Contest</h2>
-        <input
-          type="number"
-          min="1"
+        <select
           value={userID}
           onChange={(event) => setUserID(event.target.value)}
-          placeholder="User ID"
-          aria-label="User ID"
-        />
+          aria-label="Team name"
+          disabled={isLoadingUsers || isSubmitting}
+        >
+          <option value="">
+            {isLoadingUsers ? "Loading teams..." : "Select a team"}
+          </option>
+          {contestUsers.map((user) => (
+            <option key={user.userID} value={user.userID}>
+              {user.teamName}
+            </option>
+          ))}
+        </select>
         <button type="button" onClick={handleAddUser} disabled={isSubmitting}>
           Add User
         </button>

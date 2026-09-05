@@ -23,7 +23,7 @@ CREATE TABLE usersAndTheirAdmin(
 
     FOREIGN KEY (adminID)
         REFERENCES Users(userID)
-)
+);
 
 CREATE TABLE ContestTeams (
     userID INTEGER NOT NULL,

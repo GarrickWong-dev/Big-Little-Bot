@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { createUser } from "../../services/userService";
 
+const GARRICK_USER_ID = -1;
+
 function GarrickPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +18,12 @@ function GarrickPage() {
     setIsSubmitting(true);
 
     try {
-      await createUser({ username, password, role: "admin" });
+      await createUser({
+        username,
+        password,
+        role: "admin",
+        adminID: GARRICK_USER_ID,
+      });
 
       setUsername("");
       setPassword("");
