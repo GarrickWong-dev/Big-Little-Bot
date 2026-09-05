@@ -46,7 +46,7 @@ export async function createSubmission(
   formData.append("points", String(input.points));
   formData.append("picture", input.picture);
 
-  const response = await fetch("/user/submissions", {
+  const response = await fetch("http://18.188.158.238:3000/user/submissions", {
     method: "POST",
     body: formData,
   });
@@ -62,7 +62,7 @@ export async function createSubmission(
 export async function getSubmissionsByContest(
   contestID: number,
 ): Promise<Submission[]> {
-  const response = await fetch(`/subs/contest/${contestID}`);
+  const response = await fetch(`http://18.188.158.238:3000/subs/contest/${contestID}`);
   const result = (await response.json()) as SubmissionsResponse;
 
   if (!response.ok) {
@@ -75,7 +75,7 @@ export async function getSubmissionsByContest(
 export async function getSubmissionsByUser(
   userID: number,
 ): Promise<Submission[]> {
-  const response = await fetch(`/subs/user/${userID}`);
+  const response = await fetch(`http://18.188.158.238:3000/subs/user/${userID}`);
   const result = (await response.json()) as SubmissionsResponse;
 
   if (!response.ok) {
@@ -86,7 +86,7 @@ export async function getSubmissionsByUser(
 }
 
 export async function deleteSubmission(submissionID: number): Promise<void> {
-  const response = await fetch(`/admin/submissions/${submissionID}`, {
+  const response = await fetch(`http://18.188.158.238:3000/admin/submissions/${submissionID}`, {
     method: "DELETE",
   });
   const result = (await response.json()) as DeleteSubmissionResponse;

@@ -12,7 +12,7 @@ interface UsersByAdminResponse {
 export async function getUsersByAdmin(
   adminID: number,
 ): Promise<AdminUserAssociation[]> {
-  const response = await fetch(`/uata/users/${adminID}`);
+  const response = await fetch(`http://18.188.158.238:3000/uata/users/${adminID}`);
   const result = (await response.json()) as UsersByAdminResponse;
 
   if (!response.ok) {

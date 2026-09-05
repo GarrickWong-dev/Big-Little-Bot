@@ -25,7 +25,7 @@ interface OwnedContestsResponse {
 export async function createContest(
   input: CreateContestInput,
 ): Promise<Contest> {
-  const response = await fetch("/admin/contests", {
+  const response = await fetch("http://18.188.158.238:3000/admin/contests", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export async function createContest(
 }
 
 export async function getOwnedContestIds(adminID: number): Promise<number[]> {
-  const response = await fetch(`/co/contests/${adminID}`);
+  const response = await fetch(`http://18.188.158.238:3000/admin/contests/${adminID}`);
   const result = (await response.json()) as OwnedContestsResponse;
 
   if (!response.ok) {
