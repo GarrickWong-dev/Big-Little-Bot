@@ -15,7 +15,7 @@ interface LoginResponse {
 const AUTH_USER_KEY = "big-little-auth-user";
 
 export async function login(username: string, password: string): Promise<AuthUser> {
-  const response = await fetch("/login", {
+  const response = await fetch("http://18.188.158.238:3000/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
