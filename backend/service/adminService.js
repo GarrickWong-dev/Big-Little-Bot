@@ -14,8 +14,8 @@ function createUser({ username, password, role }) {
     return adminRepo.createUser({ username, password, role });
 }
 
-function addToContest({ contestID, teamID }) {
-    return adminRepo.addToContest(contestID, teamID);
+function addToContest({ contestID, userID }) {
+    return adminRepo.addToContest(contestID, userID);
 }
 
 function changeMaxSubs(contestID, newMaxSubs) {
@@ -29,7 +29,7 @@ async function deleteSubmission(submissionID) {
         throw new Error('Submission not found');
     }
 
-    await ctRepo.removePoints(submissionID, submission.teamID, submission.contestID);
+    await ctRepo.removePoints(submissionID, submission.userID, submission.contestID);
 
     if (submission.picturePath) {
         const relativePath = submission.picturePath.replace(/^\/pics\//, '');

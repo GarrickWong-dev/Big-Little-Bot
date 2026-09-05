@@ -3,8 +3,8 @@ const contestRepo = require('../repository/ContestRepoHelper');
 const subsRepo = require('../repository/subsRepoHelper');
 const ctRepo = require('../repository/ctRepoHelper');
 
-async function createSubmission({ title, teamID, contestID, submissionDate, points, picturePath }) {
-  if (!title || !teamID || !contestID || !submissionDate || points == null || !picturePath) {
+async function createSubmission({ title, userID, contestID, submissionDate, points, picturePath }) {
+  if (!title || !userID || !contestID || !submissionDate || points == null || !picturePath) {
     throw new Error('All fields are required');
   }
 
@@ -17,20 +17,20 @@ async function createSubmission({ title, teamID, contestID, submissionDate, poin
   const maxSubs = await contestRepo.getMaxSubs(contestID);
 
   if (maxSubs === null) {
-    const submission = await userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
-    await ctRepo.addPoints(contestID, teamID, points);
+    const submission = await userRepo.newSubmission({ title, userID, contestID, submissionDate, points, picturePath });
+    await ctRepo.addPoints(contestID, userID, points);
     return submission;
   }
 
-  const dailySubsCount = await subsRepo.countDailySubs(contestID, teamID, submissionDate);
+  const dailySubsCount = await subsRepo.countDailySubs(contestID, userID, submissionDate);
 
   if (dailySubsCount >= maxSubs){
-    throw new Error(`This team has reached the contest limit of ${maxSubs} submissions for today.`);
+    throw new Error(`This user has reached the contest limit of ${maxSubs} submissions for today.`);
   }
 
-  const submission = await userRepo.newSubmission({ title, teamID, contestID, submissionDate, points, picturePath });
+  const submission = await userRepo.newSubmission({ title, userID, contestID, submissionDate, points, picturePath });
 
-  await ctRepo.addPoints(contestID, teamID, points);
+  await ctRepo.addPoints(contestID, userID, points);
 
   return submission;
 }

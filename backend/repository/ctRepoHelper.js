@@ -4,28 +4,28 @@ const sqlite3 = require('sqlite3').verbose();
 const dbPath = path.resolve(__dirname, '../../database/bigLittle.db');
 const db = new sqlite3.Database(dbPath);
 
-function addPoints(contestID, teamID, points) {
+function addPoints(contestID, userID, points) {
     return new Promise((resolve, reject) => {
-        if (!contestID || !teamID || points === undefined) {
-            reject(new Error("contestID, teamID, and points are required"));
+        if (!contestID || !userID || points === undefined) {
+            reject(new Error("contestID, userID, and points are required"));
             return;
         }
         const update = `
         UPDATE ContestTeams
         SET pointsTotal = pointsTotal + ?
-        WHERE contestID = ? AND teamID = ?
+        WHERE contestID = ? AND userID = ?
         `;
-        db.run(update, [points, contestID, teamID], function(err) {
+        db.run(update, [points, contestID, userID], function(err) {
             if (err) {
                 reject(err);
                 return;
             }
-            resolve({ contestID, teamID, points });
+            resolve({ contestID, userID, points });
         });
     });
 }
 
-function removePoints(submissionID, teamID, contestID) {
+function removePoints(submissionID, userID, contestID) {
     return new Promise((resolve, reject) => {
         if (!submissionID) {
             reject(new Error("submissionID is required"));
@@ -38,9 +38,9 @@ function removePoints(submissionID, teamID, contestID) {
             FROM Submissions
             WHERE submissionID = ?
         )
-        WHERE teamID = ? AND contestID = ?
+        WHERE userID = ? AND contestID = ?
         `;
-        db.run(update, [submissionID, teamID, contestID], function(err) {
+        db.run(update, [submissionID, userID, contestID], function(err) {
             if (err) {
                 reject(err);
                 return;

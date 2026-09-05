@@ -49,34 +49,34 @@ function createUser({username, password, role}){
                 reject(err);
                 return;
             }
-            const teamID = this.lastID;
+            const userID = this.lastID;
             resolve({
                 username,
                 role,
-                teamID
+                userID
             });
         })
     })
 }
 
-function addToContest(contestID, teamID){
+function addToContest(contestID, userID){
     return new Promise((resolve, reject) => {
-        if (!contestID || !teamID){
-            reject(new Error("contestID and teamID are required"));
+        if (!contestID || !userID){
+            reject(new Error("contestID and userID are required"));
             return;
         }
         const insert = `
-        INSERT INTO ContestTeams (contestID, teamID)
+        INSERT INTO ContestTeams (contestID, userID)
         VALUES (?, ?)
         `;
-        db.run(insert, [contestID, teamID], function(err){
+        db.run(insert, [contestID, userID], function(err){
             if (err){
                 reject(err);
                 return;
             }
             resolve({
                 contestID,
-                teamID
+                userID
             });
         })
     })

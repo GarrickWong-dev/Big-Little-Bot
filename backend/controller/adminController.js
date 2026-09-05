@@ -32,7 +32,7 @@ async function addToContest(req, res) {
     return res.status(200).json({ success: true, result });
   } catch (error) {
     const message = error.message || 'Something went wrong';
-    if (message.includes('contestID') || message.includes('teamID')) {
+    if (message.includes('contestID') || message.includes('userID')) {
       return res.status(400).json({ message });
     }
     return res.status(500).json({ message });

@@ -4,17 +4,17 @@ const sqlite3 = require('sqlite3').verbose(); //Imports SQLite module
 const dbPath = path.resolve(__dirname, '../../database/bigLittle.db'); // gives dbPath the relative path to the "bigLittle.db" data base
 const db = new sqlite3.Database(dbPath); //Create a connection to the database and stores it in the variable db
 
-function newSubmission({title, teamID, contestID, submissionDate, points, picturePath}){
+function newSubmission({title, userID, contestID, submissionDate, points, picturePath}){
   return new Promise((resolve, reject) => {
-    if (!title || !teamID || !contestID || !submissionDate || points == null || !picturePath){
+    if (!title || !userID || !contestID || !submissionDate || points == null || !picturePath){
       reject(new Error("All fields are required"));
       return;
     }
     const insert = `
-    INSERT INTO Submissions (title, teamID, contestID, submissionDate, points, picturePath) 
+    INSERT INTO Submissions (title, userID, contestID, submissionDate, points, picturePath)
     VALUES (?, ?, ?, ?, ?, ?)
     `;
-    db.run(insert, [title, teamID, contestID, submissionDate, points, picturePath], function(err){
+    db.run(insert, [title, userID, contestID, submissionDate, points, picturePath], function(err){
       if (err){
         reject(err);
         return;
@@ -22,7 +22,7 @@ function newSubmission({title, teamID, contestID, submissionDate, points, pictur
       resolve({
         submissionID: this.lastID,
         title,
-        teamID,
+        userID,
         contestID,
         submissionDate,
         points,

@@ -9,18 +9,18 @@ CREATE TABLE Users (
     username TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role TEXT NOT NULL CHECK(role IN ('admin', 'user', 'garrick')),
-    teamID INTEGER PRIMARY KEY AUTOINCREMENT
+    userID INTEGER PRIMARY KEY AUTOINCREMENT
 );
 
 CREATE TABLE ContestTeams (
-    teamID INTEGER NOT NULL,
+    userID INTEGER NOT NULL,
     contestID INTEGER NOT NULL,
     pointsTotal INTEGER DEFAULT 0,
 
-    PRIMARY KEY (teamID, contestID),
+    PRIMARY KEY (userID, contestID),
 
-    FOREIGN KEY (teamID)
-        REFERENCES Users(teamID),
+    FOREIGN KEY (userID)
+        REFERENCES Users(userID),
 
     FOREIGN KEY (contestID)
         REFERENCES Contests(contestID)
@@ -29,14 +29,14 @@ CREATE TABLE ContestTeams (
 CREATE TABLE Submissions (
     submissionID INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
-    teamID INTEGER NOT NULL,
+    userID INTEGER NOT NULL,
     contestID INTEGER NOT NULL,
     submissionDate TEXT NOT NULL,
     points INTEGER NOT NULL,
     picturePath TEXT NOT NULL,
 
-    FOREIGN KEY (teamID)
-        REFERENCES Users(teamID),
+    FOREIGN KEY (userID)
+        REFERENCES Users(userID),
 
     FOREIGN KEY (contestID)
         REFERENCES Contests(contestID)
