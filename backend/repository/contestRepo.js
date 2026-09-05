@@ -46,7 +46,29 @@ async function getStatus(contestID) {
     });
 }
 
+async function getContestName(contestID) {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT contestName
+            FROM Contests
+            WHERE contestID = ?
+        `;
+        db.get(query, [contestID], (err, row) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            if (!row) {
+                reject(new Error('Contest not found'));
+                return;
+            }
+            resolve(row.contestName);
+        });
+    });
+}
+
 module.exports = {
     getMaxSubs,
-    getStatus
+    getStatus,
+    getContestName
 };

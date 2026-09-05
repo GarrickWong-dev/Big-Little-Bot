@@ -1,7 +1,7 @@
 const userRepo = require('../repository/userRepository');
-const contestRepo = require('../repository/ContestRepoHelper');
-const subsRepo = require('../repository/subsRepoHelper');
-const ctRepo = require('../repository/ctRepoHelper');
+const contestRepo = require('../repository/contestRepo');
+const subsRepo = require('../repository/subsRepo');
+const ctRepo = require('../repository/ctRepo');
 
 async function createSubmission({ title, userID, contestID, submissionDate, points, picturePath }) {
   if (!title || !userID || !contestID || !submissionDate || points == null || !picturePath) {

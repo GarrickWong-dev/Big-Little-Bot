@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const adminRepo = require('../repository/adminRepository');
-const ctRepo = require('../repository/ctRepoHelper');
-const subsRepo = require('../repository/subsRepoHelper');
+const ctRepo = require('../repository/ctRepo');
+const subsRepo = require('../repository/subsRepo');
 
 const picsDir = path.resolve(__dirname, '../../pics');
 

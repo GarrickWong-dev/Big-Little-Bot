@@ -7,6 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/admin": "http://localhost:3000",
+      "/co": "http://localhost:3000",
+      "/contest": "http://localhost:3000",
     },
   },
 })

@@ -1,14 +1,55 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { createContest } from "../../services/adminService";
+import { useNavigate } from "react-router-dom";
+import { createContest, getOwnedContestIds } from "../../services/adminService";
+import { getContestName } from "../../services/contestService";
+
+const ADMIN_ID = 1;
+
+interface OwnedContest {
+  contestID: number;
+  contestName: string;
+}
 
 function AdminPage() {
+  const navigate = useNavigate();
   const [contestName, setContestName] = useState("");
   const [maxSubs, setMaxSubs] = useState("");
   const [adminID, setAdminID] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [ownedContests, setOwnedContests] = useState<OwnedContest[]>([]);
+  const [isLoadingContests, setIsLoadingContests] = useState(true);
+  const [contestListError, setContestListError] = useState("");
+
+  async function loadOwnedContests() {
+    setContestListError("");
+    setIsLoadingContests(true);
+
+    try {
+      const contestIDs = await getOwnedContestIds(ADMIN_ID);
+      const contests = await Promise.all(
+        contestIDs.map(async (contestID) => ({
+          contestID,
+          contestName: await getContestName(contestID),
+        })),
+      );
+      setOwnedContests(contests);
+    } catch (error) {
+      setContestListError(
+        error instanceof Error
+          ? error.message
+          : "Unable to load owned contests.",
+      );
+    } finally {
+      setIsLoadingContests(false);
+    }
+  }
+
+  useEffect(() => {
+    void loadOwnedContests();
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,6 +70,7 @@ function AdminPage() {
       setStatusMessage(
         `Contest "${contest.contestName}" created successfully.`,
       );
+      await loadOwnedContests();
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to create contest.",
@@ -80,6 +122,28 @@ function AdminPage() {
       </form>
       {statusMessage && <p role="status">{statusMessage}</p>}
       {errorMessage && <p role="alert">{errorMessage}</p>}
+      <section>
+        <h2>My Contests</h2>
+        {isLoadingContests && <p>Loading contests...</p>}
+        {contestListError && <p role="alert">{contestListError}</p>}
+        {!isLoadingContests && !contestListError && (
+          <ul>
+            {ownedContests.map((contest) => (
+              <li key={contest.contestID}>
+                <button
+                  type="button"
+                  onClick={() => navigate(`/contest/${contest.contestID}`)}
+                >
+                  {contest.contestName}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {!isLoadingContests &&
+          !contestListError &&
+          ownedContests.length === 0 && <p>No owned contests found.</p>}
+      </section>
     </main>
   );
 }
