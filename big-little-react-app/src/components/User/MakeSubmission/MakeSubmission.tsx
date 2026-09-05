@@ -158,7 +158,7 @@ function MakeSubmission() {
           <label htmlFor="submission-date">Date</label>
           <input
             id="submission-date"
-            type="date"
+            type="text"
             value={submissionDate}
             readOnly
             required
