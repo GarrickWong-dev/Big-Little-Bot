@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../../services/authService";
 import { createContest, getOwnedContestIds } from "../../services/adminService";
 import { getContestName } from "../../services/contestService";
 import { createUser } from "../../services/userService";
-
-const ADMIN_ID = 1;
 
 interface OwnedContest {
   contestID: number;
@@ -14,9 +13,10 @@ interface OwnedContest {
 
 function AdminPage() {
   const navigate = useNavigate();
+  const currentUser = getCurrentUser();
+  const adminID = currentUser?.userID;
   const [contestName, setContestName] = useState("");
   const [maxSubs, setMaxSubs] = useState("");
-  const [adminID, setAdminID] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
@@ -34,7 +34,11 @@ function AdminPage() {
     setIsLoadingContests(true);
 
     try {
-      const contestIDs = await getOwnedContestIds(ADMIN_ID);
+      if (!adminID) {
+        throw new Error("You must be logged in as an admin.");
+      }
+
+      const contestIDs = await getOwnedContestIds(adminID);
       const contests = await Promise.all(
         contestIDs.map(async (contestID) => ({
           contestID,
@@ -55,7 +59,7 @@ function AdminPage() {
 
   useEffect(() => {
     void loadOwnedContests();
-  }, []);
+  }, [adminID]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -67,12 +71,11 @@ function AdminPage() {
       const contest = await createContest({
         contestName,
         maxSubs: maxSubs ? Number(maxSubs) : null,
-        adminID: Number(adminID),
+        adminID: adminID ?? 0,
       });
 
       setContestName("");
       setMaxSubs("");
-      setAdminID("");
       setStatusMessage(
         `Contest "${contest.contestName}" created successfully.`,
       );
@@ -97,7 +100,7 @@ function AdminPage() {
         username,
         password,
         role: "user",
-        adminID: ADMIN_ID,
+        adminID: adminID ?? 0,
       });
 
       setUsername("");
@@ -135,17 +138,6 @@ function AdminPage() {
             min="1"
             value={maxSubs}
             onChange={(event) => setMaxSubs(event.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="admin-id">Admin user ID</label>
-          <input
-            id="admin-id"
-            type="number"
-            min="1"
-            value={adminID}
-            onChange={(event) => setAdminID(event.target.value)}
-            required
           />
         </div>
         <button type="submit" disabled={isSubmitting}>
@@ -194,7 +186,7 @@ function AdminPage() {
                 <button
                   type="button"
                   onClick={() =>
-                    navigate(`/contest/${contest.contestID}/admin/${ADMIN_ID}`)
+                    navigate(`/contest/${contest.contestID}/admin/${adminID}`)
                   }
                 >
                   {contest.contestName}

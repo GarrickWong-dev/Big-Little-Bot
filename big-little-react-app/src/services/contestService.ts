@@ -10,6 +10,25 @@ interface ContestActionResponse {
   message?: string;
 }
 
+interface UserContestsResponse {
+  success: boolean;
+  contests: number[];
+  message?: string;
+}
+
+export interface LeaderboardEntry {
+  userID: number;
+  teamName: string;
+  pointsTotal: number;
+  place: number;
+}
+
+interface LeaderboardResponse {
+  success: boolean;
+  leaderboard: LeaderboardEntry[];
+  message?: string;
+}
+
 export async function getContestName(contestID: number): Promise<string> {
   const response = await fetch(`/contest/${contestID}/name`);
   const result = (await response.json()) as ContestNameResponse;
@@ -19,6 +38,30 @@ export async function getContestName(contestID: number): Promise<string> {
   }
 
   return result.contestName;
+}
+
+export async function getContestsByUser(userID: number): Promise<number[]> {
+  const response = await fetch(`/contest/user/${userID}`);
+  const result = (await response.json()) as UserContestsResponse;
+
+  if (!response.ok) {
+    throw new Error(result.message || "Unable to load your contests.");
+  }
+
+  return result.contests;
+}
+
+export async function getLeaderboard(
+  contestID: number,
+): Promise<LeaderboardEntry[]> {
+  const response = await fetch(`/contest/${contestID}/leaderboard`);
+  const result = (await response.json()) as LeaderboardResponse;
+
+  if (!response.ok) {
+    throw new Error(result.message || "Unable to load leaderboard.");
+  }
+
+  return result.leaderboard;
 }
 
 async function sendContestAction(

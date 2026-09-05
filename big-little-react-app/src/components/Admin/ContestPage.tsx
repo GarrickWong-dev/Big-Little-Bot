@@ -5,8 +5,10 @@ import {
   addUserToContest,
   deactivateContest,
   getContestName,
+  getLeaderboard,
   updateContestMaxSubs,
 } from "../../services/contestService";
+import type { LeaderboardEntry } from "../../services/contestService";
 import { getTeamName } from "../../services/userService";
 import { getUsersByAdmin } from "../../services/uataService";
 
@@ -26,6 +28,8 @@ function ContestPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [contestUsers, setContestUsers] = useState<ContestUser[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(true);
 
   useEffect(() => {
     if (!contestID) {
@@ -51,6 +55,36 @@ function ContestPage() {
     }
 
     void loadContestName();
+  }, [contestID]);
+
+  useEffect(() => {
+    if (!contestID) {
+      setIsLoadingLeaderboard(false);
+      return;
+    }
+
+    const contestNumber = Number(contestID);
+
+    if (!Number.isInteger(contestNumber) || contestNumber < 1) {
+      setIsLoadingLeaderboard(false);
+      return;
+    }
+
+    async function loadLeaderboard() {
+      try {
+        setLeaderboard(await getLeaderboard(contestNumber));
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Unable to load leaderboard.",
+        );
+      } finally {
+        setIsLoadingLeaderboard(false);
+      }
+    }
+
+    void loadLeaderboard();
   }, [contestID]);
 
   useEffect(() => {
@@ -171,9 +205,29 @@ function ContestPage() {
 
   return (
     <main>
+      <button type="button" onClick={() => navigate("/admin")}>
+        Back to My Profile
+      </button>
       <h1>{contestName || "Contest"}</h1>
       {errorMessage && <p role="alert">{errorMessage}</p>}
       {statusMessage && <p role="status">{statusMessage}</p>}
+      <section>
+        <h2>Leaderboard</h2>
+        {isLoadingLeaderboard && <p>Loading leaderboard...</p>}
+        {!isLoadingLeaderboard && leaderboard.length === 0 && (
+          <p>No teams in this contest yet.</p>
+        )}
+        {!isLoadingLeaderboard && leaderboard.length > 0 && (
+          <ol>
+            {leaderboard.map((entry) => (
+              <li key={entry.userID}>
+                <span>{entry.teamName}</span> - Place {entry.place},{" "}
+                {entry.pointsTotal} points
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
       <section>
         <h2>Submissions</h2>
         <button

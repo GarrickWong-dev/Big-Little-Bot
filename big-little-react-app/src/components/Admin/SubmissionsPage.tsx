@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   deleteSubmission,
   getSubmissionsByContest,
@@ -12,6 +12,7 @@ interface DisplaySubmission extends Submission {
 }
 
 function SubmissionsPage() {
+  const navigate = useNavigate();
   const { contestID } = useParams();
   const [submissions, setSubmissions] = useState<DisplaySubmission[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -85,6 +86,9 @@ function SubmissionsPage() {
 
   return (
     <main>
+      <button type="button" onClick={() => navigate("/admin")}>
+        Back to My Profile
+      </button>
       <h1>Submissions</h1>
       {isLoading && <p>Loading submissions...</p>}
       {errorMessage && <p role="alert">{errorMessage}</p>}

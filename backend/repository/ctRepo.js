@@ -50,7 +50,58 @@ function removePoints(submissionID, userID, contestID) {
     });
 }
 
+function getContestsByUser(userID) {
+    return new Promise((resolve, reject) => {
+        if (!userID) {
+            reject(new Error("userID is required"));
+            return;
+        }
+        const query = `
+        SELECT contestID
+        FROM ContestTeams
+        WHERE userID = ?
+        ORDER BY contestID
+        `;
+        db.all(query, [userID], function(err, rows) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows.map((row) => row.contestID));
+        });
+    });
+}
+
+function getLeaderboard(contestID) {
+    return new Promise((resolve, reject) => {
+        if (!contestID) {
+            reject(new Error("contestID is required"));
+            return;
+        }
+        const query = `
+        SELECT
+            ContestTeams.userID,
+            Users.username AS teamName,
+            ContestTeams.pointsTotal,
+            RANK() OVER (ORDER BY ContestTeams.pointsTotal DESC) AS place
+        FROM ContestTeams
+        JOIN Users ON Users.userID = ContestTeams.userID
+        WHERE ContestTeams.contestID = ?
+        ORDER BY ContestTeams.pointsTotal DESC, Users.username ASC
+        `;
+        db.all(query, [contestID], function(err, rows) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows);
+        });
+    });
+}
+
 module.exports = {
     addPoints,
-    removePoints
+    removePoints,
+    getContestsByUser,
+    getLeaderboard
 };

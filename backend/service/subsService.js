@@ -8,6 +8,15 @@ function getSubmissionsByContest(contestID) {
     return subsRepo.getSubmissionsByContest(contestID);
 }
 
+function getSubmissionsByUser(userID) {
+    if (!userID) {
+        throw new Error('userID is required');
+    }
+
+    return subsRepo.getSubmissionsByUser(userID);
+}
+
 module.exports = {
-    getSubmissionsByContest
+    getSubmissionsByContest,
+    getSubmissionsByUser
 };
