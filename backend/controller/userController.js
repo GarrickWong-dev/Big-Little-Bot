@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const heicConvert = require('heic-convert');
 const userService = require('../service/userService');
 
 const uploadDir = path.resolve(__dirname, '../../pics');
@@ -12,12 +13,37 @@ async function createSubmission(req, res) {
       return res.status(400).json({ message: 'Picture is required' });
     }
 
-    const safeFileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
+    let fileBuffer = req.file.buffer;
+
+    const originalExtension = path
+      .extname(req.file.originalname)
+      .toLowerCase();
+
+    const baseName = path
+      .parse(req.file.originalname)
+      .name
+      .replace(/\s+/g, '_');
+
+    let fileExtension = originalExtension;
+
+    if (originalExtension === '.heic') {
+      fileBuffer = await heicConvert({
+        buffer: fileBuffer,
+        format: 'JPEG',
+        quality: 0.9,
+      });
+
+      fileExtension = '.jpg';
+    }
+
+    const safeFileName =
+      `${Date.now()}-${baseName}${fileExtension}`;
+
     const filePath = path.join(uploadDir, safeFileName);
 
-    await fs.promises.writeFile(filePath, req.file.buffer);
+    await fs.promises.writeFile(filePath, fileBuffer);
 
-    const savedPicturePath = `/pics/${safeFileName}`; //IMPORTANT FOR LATER: PATHS ARE RELATIVE
+    const savedPicturePath = `/pics/${safeFileName}`;
 
     const payload = {
       ...req.body,
@@ -52,6 +78,7 @@ async function createSubmission(req, res) {
 async function getTeamName(req, res) {
   try {
     const teamName = await userService.getTeamName(req.params.userID);
+
     return res.status(200).json({
       success: true,
       teamName,
