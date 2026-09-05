@@ -71,7 +71,7 @@ function UserPage() {
                 <p>Points: {submission.points}</p>
                 <p>Date: {submission.submissionDate}</p>
                 <img
-                  src={submission.picturePath}
+                  src={`http://18.188.158.238:3000${submission.picturePath}`}
                   alt={submission.title}
                   width="200"
                 />
