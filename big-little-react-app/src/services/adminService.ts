@@ -43,7 +43,7 @@ export async function createContest(
 }
 
 export async function getOwnedContestIds(adminID: number): Promise<number[]> {
-  const response = await fetch(`http://18.188.158.238:3000/admin/contests/${adminID}`);
+  const response = await fetch(`http://18.188.158.238:3000/co/contests/${adminID}`);
   const result = (await response.json()) as OwnedContestsResponse;
 
   if (!response.ok) {
