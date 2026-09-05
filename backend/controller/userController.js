@@ -5,6 +5,8 @@ const userService = require('../service/userService');
 
 const uploadDir = path.resolve(__dirname, '../../pics');
 
+const { notifySubmission } = require('../utils/discord');
+
 fs.mkdirSync(uploadDir, { recursive: true });
 
 async function createSubmission(req, res) {
@@ -51,6 +53,8 @@ async function createSubmission(req, res) {
     };
 
     const submission = await userService.createSubmission(payload);
+
+    await notifySubmission(payload, filePath);
 
     return res.status(201).json({
       success: true,

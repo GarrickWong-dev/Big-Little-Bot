@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 // Entry point of the backend application; starts the Express server and begins listening for incoming requests.
 
 const app = require('./app');
