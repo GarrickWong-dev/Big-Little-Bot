@@ -6,8 +6,10 @@ const subsRepo = require('../repository/subsRepoHelper');
 
 const picsDir = path.resolve(__dirname, '../../pics');
 
-function createContest({ contestName, maxSubs }) {
-    return adminRepo.createContest({ contestName, maxSubs });
+async function createContest({ contestName, maxSubs, adminID }) {
+    const response =  await adminRepo.createContest({ contestName, maxSubs });
+    await adminRepo.addOwner(response.contestID, adminID);
+    return response;
 }
 
 function createUser({ username, password, role }) {

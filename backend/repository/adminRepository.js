@@ -4,7 +4,30 @@ const sqlite3 = require('sqlite3').verbose();
 const dbPath = path.resolve(__dirname, '../../database/bigLittle.db');
 const db = new sqlite3.Database(dbPath);
 
-function createContest({contestName, maxSubs}){
+function addOwner (contestID, userID){
+    return new Promise((resolve, reject) => {
+        if (!contestID || !userID){
+            reject(new Error("contestID and userID are required"));
+            return;
+        }
+        const insert = `
+        insert into ContestOwners (contestID, userID)
+        values (?, ?)
+        `;
+        db.run(insert, [contestID, userID], function(err){
+            if (err){
+                reject(err);
+                return;
+            }
+            resolve({
+                contestID,
+                userID
+            });
+        })
+    })
+}
+
+function createContest({contestName, maxSubs, adminID}){
     return new Promise((resolve, reject) => {
         if (!contestName){ 
             reject(new Error("contestName is required"));
@@ -201,5 +224,6 @@ module.exports = {
     deleteSubmission,
     makeActive,
     makeInactive,
-    addToContest
+    addToContest,
+    addOwner
 };

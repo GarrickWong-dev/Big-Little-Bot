@@ -26,6 +26,19 @@ CREATE TABLE ContestTeams (
         REFERENCES Contests(contestID)
 );
 
+CREATE TABLE ContestOwners (
+    userID INTEGER NOT NULL,
+    contestID INTEGER NOT NULL,
+
+    PRIMARY KEY (userID, contestID),
+
+    FOREIGN KEY (userID)
+        REFERENCES Users(userID),
+
+    FOREIGN KEY (contestID)
+        REFERENCES Contests(contestID)
+);
+
 CREATE TABLE Submissions (
     submissionID INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,

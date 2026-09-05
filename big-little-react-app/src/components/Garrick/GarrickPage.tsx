@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
+import { createUser } from "../../services/userService";
 
 function GarrickPage() {
   const [username, setUsername] = useState("");
@@ -15,23 +16,7 @@ function GarrickPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/admin/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-          role: "admin",
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Unable to create admin user.");
-      }
+      await createUser({ username, password, role: "admin" });
 
       setUsername("");
       setPassword("");
