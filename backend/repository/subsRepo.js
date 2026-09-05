@@ -42,7 +42,25 @@ function getSubmission(submissionID) {
     });
 }
 
+function getSubmissionsByContest(contestID) {
+    return new Promise((resolve, reject) => {
+        const query = `
+            SELECT *
+            FROM Submissions
+            WHERE contestID = ?
+        `;
+        db.all(query, [contestID], (err, rows) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(rows);
+        });
+    });
+}
+
 module.exports = {
     countDailySubs,
-    getSubmission
+    getSubmission,
+    getSubmissionsByContest
 };

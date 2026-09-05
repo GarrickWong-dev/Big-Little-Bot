@@ -18,6 +18,12 @@ interface CreateUserResponse {
   message?: string;
 }
 
+interface TeamNameResponse {
+  success: boolean;
+  teamName: string;
+  message?: string;
+}
+
 export async function createUser(input: CreateUserInput): Promise<User> {
   const response = await fetch("/admin/users", {
     method: "POST",
@@ -34,4 +40,15 @@ export async function createUser(input: CreateUserInput): Promise<User> {
   }
 
   return result.user;
+}
+
+export async function getTeamName(userID: number): Promise<string> {
+  const response = await fetch(`/user/${userID}/team-name`);
+  const result = (await response.json()) as TeamNameResponse;
+
+  if (!response.ok) {
+    throw new Error(result.message || "Unable to load team name.");
+  }
+
+  return result.teamName;
 }

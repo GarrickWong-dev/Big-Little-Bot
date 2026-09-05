@@ -4,6 +4,12 @@ interface ContestNameResponse {
   message?: string;
 }
 
+interface ContestActionResponse {
+  success: boolean;
+  result: unknown;
+  message?: string;
+}
+
 export async function getContestName(contestID: number): Promise<string> {
   const response = await fetch(`/contest/${contestID}/name`);
   const result = (await response.json()) as ContestNameResponse;
@@ -13,4 +19,67 @@ export async function getContestName(contestID: number): Promise<string> {
   }
 
   return result.contestName;
+}
+
+async function sendContestAction(
+  url: string,
+  options: RequestInit,
+  errorMessage: string,
+): Promise<void> {
+  const response = await fetch(url, options);
+  const result = (await response.json()) as ContestActionResponse;
+
+  if (!response.ok) {
+    throw new Error(result.message || errorMessage);
+  }
+}
+
+export async function addUserToContest(
+  contestID: number,
+  userID: number,
+): Promise<void> {
+  await sendContestAction(
+    "/admin/contests/addTeam",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ contestID, userID }),
+    },
+    "Unable to add user to contest.",
+  );
+}
+
+export async function updateContestMaxSubs(
+  contestID: number,
+  maxSubs: number | null,
+): Promise<void> {
+  await sendContestAction(
+    `/admin/contests/${contestID}/maxsubs`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ maxSubs }),
+    },
+    "Unable to update contest submission limit.",
+  );
+}
+
+export async function activateContest(contestID: number): Promise<void> {
+  await sendContestAction(
+    `/admin/contests/${contestID}/activate`,
+    { method: "PUT" },
+    "Unable to activate contest.",
+  );
+}
+
+export async function deactivateContest(contestID: number): Promise<void> {
+  await sendContestAction(
+    `/admin/contests/${contestID}/deactivate`,
+    { method: "PUT" },
+    "Unable to deactivate contest.",
+  );
 }

@@ -32,6 +32,28 @@ function newSubmission({title, userID, contestID, submissionDate, points, pictur
   })
 }
 
+function getTeamName(userID){
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT username AS teamName
+      FROM Users
+      WHERE userID = ?
+    `;
+    db.get(query, [userID], (err, row) => {
+      if (err){
+        reject(err);
+        return;
+      }
+      if (!row){
+        reject(new Error('User not found'));
+        return;
+      }
+      resolve(row.teamName);
+    });
+  });
+}
+
 module.exports = {
-  newSubmission
+  newSubmission,
+  getTeamName
 }

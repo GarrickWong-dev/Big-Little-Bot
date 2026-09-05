@@ -49,6 +49,29 @@ async function createSubmission(req, res) {
   }
 }
 
+async function getTeamName(req, res) {
+  try {
+    const teamName = await userService.getTeamName(req.params.userID);
+    return res.status(200).json({
+      success: true,
+      teamName,
+    });
+  } catch (error) {
+    const message = error.message || 'Something went wrong';
+
+    if (message.includes('userID')) {
+      return res.status(400).json({ message });
+    }
+
+    if (message.includes('not found')) {
+      return res.status(404).json({ message });
+    }
+
+    return res.status(500).json({ message });
+  }
+}
+
 module.exports = {
   createSubmission,
+  getTeamName,
 };

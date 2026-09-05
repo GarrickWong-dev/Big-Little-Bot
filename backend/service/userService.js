@@ -35,6 +35,15 @@ async function createSubmission({ title, userID, contestID, submissionDate, poin
   return submission;
 }
 
+async function getTeamName(userID) {
+  if (!userID) {
+    throw new Error('userID is required');
+  }
+
+  return userRepo.getTeamName(userID);
+}
+
 module.exports = {
   createSubmission,
+  getTeamName,
 };

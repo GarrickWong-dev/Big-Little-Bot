@@ -12,6 +12,19 @@ CREATE TABLE Users (
     userID INTEGER PRIMARY KEY AUTOINCREMENT
 );
 
+CREATE TABLE usersAndTheirAdmin(
+    userID INTEGER NOT NULL,
+    adminID INTEGER NOT NULL,
+
+    PRIMARY KEY (userID, adminID),
+
+    FOREIGN KEY (userID)
+        REFERENCES Users(userID),
+
+    FOREIGN KEY (adminID)
+        REFERENCES Users(userID)
+)
+
 CREATE TABLE ContestTeams (
     userID INTEGER NOT NULL,
     contestID INTEGER NOT NULL,
