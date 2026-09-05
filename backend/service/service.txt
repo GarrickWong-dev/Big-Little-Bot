@@ -1,0 +1,2 @@
+"Knows business logic"
+This folder contains programs responsible for the application's business logic. Service modules enforce rules, validate data, and coordinate actions between repositories. Services determine what operations are allowed and use repository functions to interact with the database.
