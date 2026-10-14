@@ -1,3 +1,5 @@
+import { apiUrl } from "./api";
+
 export type UserRole = "admin" | "user" | "garrick";
 
 export interface CreateUserInput {
@@ -26,7 +28,7 @@ interface TeamNameResponse {
 }
 
 export async function createUser(input: CreateUserInput): Promise<User> {
-  const response = await fetch("http://18.188.158.238:3000/admin/users", {
+  const response = await fetch(apiUrl("/admin/users"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -44,7 +46,7 @@ export async function createUser(input: CreateUserInput): Promise<User> {
 }
 
 export async function getTeamName(userID: number): Promise<string> {
-  const response = await fetch(`http://18.188.158.238:3000/user/${userID}/team-name`);
+  const response = await fetch(apiUrl(`/user/${userID}/team-name`));
   const result = (await response.json()) as TeamNameResponse;
 
   if (!response.ok) {

@@ -1,0 +1,7 @@
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:3000"
+).replace(/\/+$/, "");
+
+export function apiUrl(path: string): string {
+  return `${API_BASE_URL}/${path.replace(/^\/+/, "")}`;
+}

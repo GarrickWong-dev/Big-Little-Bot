@@ -1,3 +1,5 @@
+import { apiUrl } from "./api";
+
 export interface CreateContestInput {
   contestName: string;
   maxSubs: number | null;
@@ -25,7 +27,7 @@ interface OwnedContestsResponse {
 export async function createContest(
   input: CreateContestInput,
 ): Promise<Contest> {
-  const response = await fetch("http://18.188.158.238:3000/admin/contests", {
+  const response = await fetch(apiUrl("/admin/contests"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +45,7 @@ export async function createContest(
 }
 
 export async function getOwnedContestIds(adminID: number): Promise<number[]> {
-  const response = await fetch(`http://18.188.158.238:3000/co/contests/${adminID}`);
+  const response = await fetch(apiUrl(`/co/contests/${adminID}`));
   const result = (await response.json()) as OwnedContestsResponse;
 
   if (!response.ok) {
