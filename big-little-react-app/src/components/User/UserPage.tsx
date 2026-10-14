@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from "../../services/api";
 import { getCurrentUser } from "../../services/authService";
 import {
   getSubmissionsByUser,
@@ -71,7 +72,7 @@ function UserPage() {
                 <p>Points: {submission.points}</p>
                 <p>Date: {submission.submissionDate}</p>
                 <img
-                  src={`http://18.188.158.238:3000${submission.picturePath}`}
+                  src={apiUrl(submission.picturePath)}
                   alt={submission.title}
                   width="200"
                 />

@@ -1,3 +1,5 @@
+import { apiUrl } from "./api";
+
 interface ContestNameResponse {
   success: boolean;
   contestName: string;
@@ -30,7 +32,7 @@ interface LeaderboardResponse {
 }
 
 export async function getContestName(contestID: number): Promise<string> {
-  const response = await fetch(`http://18.188.158.238:3000/contest/${contestID}/name`);
+  const response = await fetch(apiUrl(`/contest/${contestID}/name`));
   const result = (await response.json()) as ContestNameResponse;
 
   if (!response.ok) {
@@ -41,7 +43,7 @@ export async function getContestName(contestID: number): Promise<string> {
 }
 
 export async function getContestsByUser(userID: number): Promise<number[]> {
-  const response = await fetch(`http://18.188.158.238:3000/contest/user/${userID}`);
+  const response = await fetch(apiUrl(`/contest/user/${userID}`));
   const result = (await response.json()) as UserContestsResponse;
 
   if (!response.ok) {
@@ -54,7 +56,7 @@ export async function getContestsByUser(userID: number): Promise<number[]> {
 export async function getLeaderboard(
   contestID: number,
 ): Promise<LeaderboardEntry[]> {
-  const response = await fetch(`http://18.188.158.238:3000/contest/${contestID}/leaderboard`);
+  const response = await fetch(apiUrl(`/contest/${contestID}/leaderboard`));
   const result = (await response.json()) as LeaderboardResponse;
 
   if (!response.ok) {
@@ -82,7 +84,7 @@ export async function addUserToContest(
   userID: number,
 ): Promise<void> {
   await sendContestAction(
-    "http://18.188.158.238:3000/admin/contests/addTeam",
+    apiUrl("/admin/contests/addTeam"),
     {
       method: "POST",
       headers: {
@@ -99,7 +101,7 @@ export async function updateContestMaxSubs(
   maxSubs: number | null,
 ): Promise<void> {
   await sendContestAction(
-    `http://18.188.158.238:3000/admin/contests/${contestID}/maxsubs`,
+    apiUrl(`/admin/contests/${contestID}/maxsubs`),
     {
       method: "PUT",
       headers: {
@@ -113,7 +115,7 @@ export async function updateContestMaxSubs(
 
 export async function activateContest(contestID: number): Promise<void> {
   await sendContestAction(
-    `http://18.188.158.238:3000/admin/contests/${contestID}/activate`,
+    apiUrl(`/admin/contests/${contestID}/activate`),
     { method: "PUT" },
     "Unable to activate contest.",
   );
@@ -121,7 +123,7 @@ export async function activateContest(contestID: number): Promise<void> {
 
 export async function deactivateContest(contestID: number): Promise<void> {
   await sendContestAction(
-    `http://18.188.158.238:3000/admin/contests/${contestID}/deactivate`,
+    apiUrl(`/admin/contests/${contestID}/deactivate`),
     { method: "PUT" },
     "Unable to deactivate contest.",
   );
