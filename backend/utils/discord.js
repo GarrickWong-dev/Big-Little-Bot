@@ -19,7 +19,7 @@ async function notifySubmission(submission, imagePath) {
         content:
           `📸 New Submission\n` +
           `Title: ${submission.title}\n` +
-          `User: ${submission.userID}\n` +
+          `User: ${submission.username}\n` +
           `Contest: ${submission.contestID}\n` +
           `Points: ${submission.points}`,
       }),
