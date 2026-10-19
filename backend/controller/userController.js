@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const heicConvert = require('heic-convert');
 const userService = require('../service/userService');
+const contestService = require('../service/contestService');
 
 const uploadDir = path.resolve(__dirname, '../../pics');
 
@@ -54,8 +55,9 @@ async function createSubmission(req, res) {
 
     const submission = await userService.createSubmission(payload);
     const username = await userService.getTeamName(submission.userID);
+    const contestName = await contestService.getContestName(submission.contestID);
 
-    await notifySubmission({ ...payload, username }, filePath);
+    await notifySubmission({ ...payload, username, contestName }, filePath);
 
     return res.status(201).json({
       success: true,
