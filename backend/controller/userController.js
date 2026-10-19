@@ -53,8 +53,9 @@ async function createSubmission(req, res) {
     };
 
     const submission = await userService.createSubmission(payload);
+    const username = await userService.getTeamName(submission.userID);
 
-    await notifySubmission(payload, filePath);
+    await notifySubmission({ ...payload, username }, filePath);
 
     return res.status(201).json({
       success: true,
